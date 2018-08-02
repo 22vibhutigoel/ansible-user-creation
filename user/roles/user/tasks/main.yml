@@ -1,0 +1,14 @@
+---
+- name: creating user
+  user:
+    name: "{{user_name}}"
+    state: present
+
+- name: Set up authorized keys for the deployer user
+  authorized_key: user="{{user_name}}" key="{{item}}"
+  with_file:
+    - "{{user_name}}"
+
+- name: giving sudo access
+  shell: echo "{{user_name}} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/root_users
+  when: sudo_user == 'yes'
